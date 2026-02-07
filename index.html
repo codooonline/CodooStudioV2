@@ -1,3 +1,4 @@
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -8,67 +9,34 @@
 <!-- CodeMirror -->
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.16/codemirror.min.css">
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.16/theme/material-darker.min.css">
-<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.16/theme/eclipse.min.css">
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.16/addon/hint/show-hint.min.css">
 
 <style>
-:root {
-  --bg:#ffffff; --fg:#111; --panel:#f4f4f4; --accent:#4f46e5; --separator:#000; --button-hover:#6366f1;
-}
-body.dark { --bg:#0f1117; --fg:#e5e7eb; --panel:#161a23; --accent:#22d3ee; --separator:#222; --button-hover:#06b6d4; }
-
-*{box-sizing:border-box;}
-body{margin:0;font-family:system-ui,sans-serif;background:var(--bg);color:var(--fg);height:100vh;display:flex;flex-direction:column;transition:0.3s;}
-
-header{display:flex;justify-content:space-between;align-items:center;padding:12px 16px;background:var(--panel);border-bottom:2px solid var(--separator);}
-header h1{font-size:22px;margin:0;font-weight:bold;}
-header h1 span{color:var(--accent);}
-.header-buttons{display:flex;gap:6px;align-items:center;}
-
-header button, #copyBtn{background:var(--accent);border:none;color:white;padding:6px 12px;border-radius:6px;cursor:pointer;transition:0.2s;}
-header button:hover, #copyBtn:hover{background:var(--button-hover);}
-
-main{flex:1;display:grid;grid-template-columns:1fr 0fr;min-height:0;position:relative;transition:0.4s;}
-.editor{height:100%;width:100%;background:#2d2d2d;border-right:4px solid var(--separator);position:relative;transition:0.4s;}
+body { margin:0; font-family:system-ui,sans-serif; background:#0f1117; color:#e5e7eb; height:100vh; display:flex; flex-direction:column; }
+header{display:flex; justify-content:space-between; align-items:center; padding:12px 16px; background:#161a23; border-bottom:2px solid #222;}
+header h1{font-size:22px; margin:0; font-weight:bold;} header h1 span{color:#22d3ee;}
+.header-buttons{display:flex; gap:6px; align-items:center;}
+header button, #copyBtn{background:#22d3ee; border:none; color:white; padding:6px 12px; border-radius:6px; cursor:pointer; transition:0.2s;}
+header button:hover, #copyBtn:hover{background:#06b6d4;}
+main{flex:1; display:grid; grid-template-columns:1fr 0fr; min-height:0; position:relative; transition:0.4s;}
+.editor{height:100%; width:100%; background:#2d2d2d; border-right:4px solid #222; position:relative; transition:0.4s;}
 .editor .CodeMirror { background:#2d2d2d !important; color:#e6e6e6; }
 .CodeMirror-cursor { border-left:2px solid #ffffff !important; }
 .CodeMirror-selected { background:rgba(255,255,255,0.2) !important; }
 
-.preview{background:white;display:none;position:relative;overflow:hidden;transition:0.4s;}
-iframe{width:100%;height:100%;border:none;}
+.preview{background:white; display:none; position:relative; overflow:hidden; transition:0.4s;}
+iframe{width:100%; height:100%; border:none;}
 
-#copyBtn{position:absolute;top:10px;right:10px;}
-
-#menuBtn{background:var(--panel);color:var(--fg);font-size:20px;padding:6px 10px;border-radius:6px;border:none;cursor:pointer;transition:0.2s;}
-#menuBtn:hover{background:var(--accent);color:white;}
-#menu{position:absolute;top:44px;left:0;background:var(--panel);border:2px solid var(--separator);border-radius:6px;padding:10px;display:none;flex-direction:column;gap:6px;z-index:10;}
+#copyBtn{position:absolute;top:10px; right:10px;}
+#menuBtn{background:#161a23; color:#e5e7eb; font-size:20px; padding:6px 10px; border-radius:6px; border:none; cursor:pointer; transition:0.2s;}
+#menuBtn:hover{background:#22d3ee; color:white;}
+#menu{position:absolute; top:44px; left:0; background:#161a23; border:2px solid #222; border-radius:6px; padding:10px; display:none; flex-direction:column; gap:6px; z-index:10;}
 .menu-group{margin-bottom:8px;}
 .menu-group label{font-weight:bold;margin-bottom:4px;display:block;}
-.menu-group button{background:var(--accent);color:white;border:none;padding:6px 10px;border-radius:6px;cursor:pointer;transition:0.2s;margin-bottom:4px;width:100%;}
-.menu-group button:hover{background:var(--button-hover);}
+.menu-group button{background:#22d3ee; color:white; border:none; padding:6px 10px; border-radius:6px; cursor:pointer; transition:0.2s; margin-bottom:4px; width:100%;}
+.menu-group button:hover{background:#06b6d4;}
 
-#streakBtn {
-  background: linear-gradient(135deg, #4f46e5, #22d3ee);
-  border: none;
-  color: white;
-  padding: 10px 18px;
-  border-radius: 50px;
-  cursor: pointer;
-  font-weight: 600;
-  display: flex;
-  align-items: center;
-  gap: 6px;
-  box-shadow: 0 4px 12px rgba(0,0,0,0.25);
-  transition: transform 0.2s, box-shadow 0.2s, background 0.3s;
-}
-#streakBtn:hover { transform: translateY(-2px); box-shadow: 0 6px 18px rgba(0,0,0,0.35); background: linear-gradient(135deg, #6366f1, #06b6d4);}
-#streakBtn:active { transform: translateY(1px); box-shadow: 0 3px 8px rgba(0,0,0,0.25); }
-
-footer{padding:8px 12px;background:var(--panel);font-size:13px;display:flex;justify-content:space-between;align-items:center;border-top:2px solid var(--separator);}
-.badge{display:flex;align-items:center;gap:8px;}
-.badge img{width:32px;height:32px;border-radius:6px;background:#ccc;}
-
-@media(max-width:900px){main{grid-template-columns:1fr;grid-template-rows:1fr 0fr;}.editor{border-right:none;border-bottom:4px solid var(--separator);}}
+@media(max-width:900px){main{grid-template-columns:1fr;grid-template-rows:1fr 0fr;}.editor{border-right:none;border-bottom:4px solid #222;}}
 </style>
 </head>
 <body>
@@ -79,7 +47,6 @@ footer{padding:8px 12px;background:var(--panel);font-size:13px;display:flex;just
     <h1>Co<span>Doo</span></h1>
   </div>
   <div class="header-buttons">
-    <button id="modeBtn">Dark Mode</button>
     <button id="undoBtn">Undo</button>
     <button id="redoBtn">Redo</button>
     <button id="runBtn">Run</button>
@@ -106,18 +73,10 @@ footer{padding:8px 12px;background:var(--panel);font-size:13px;display:flex;just
     <button id="copyBtn">Copy</button>
   </div>
   <div class="preview">
-    <button id="closePreview" style="position:absolute;top:10px;right:10px;padding:6px 12px;border:none;border-radius:6px;background:var(--accent);color:white;cursor:pointer;">Close Preview</button>
+    <button id="closePreview" style="position:absolute;top:10px;right:10px;padding:6px 12px;border:none;border-radius:6px;background:#22d3ee;color:white;cursor:pointer;">Close Preview</button>
     <iframe id="preview"></iframe>
   </div>
 </main>
-
-<footer>
-  <div class="badge">
-    <img id="badgeImg" src="badge1.png" alt="badge">
-    <span id="badgeText">HTML Apprentice</span>
-  </div>
-  <button id="streakBtn">✔️ Daily Check-in</button>
-</footer>
 
 <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.16/codemirror.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.16/mode/xml/xml.min.js"></script>
@@ -130,14 +89,14 @@ footer{padding:8px 12px;background:var(--panel);font-size:13px;display:flex;just
 <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.16/addon/hint/html-hint.min.js"></script>
 
 <script>
-const starterCode = localStorage.getItem('codoo_code') || `<!DOCTYPE html>
+const starterCode = `<!DOCTYPE html>
 <html>
 <head><style>body{font-family:sans-serif;}</style></head>
 <body><h1>Hello Codoo 👋</h1><p>Edit HTML/CSS and click Run to see it.</p></body>
 </html>`;
 
 const editor = CodeMirror.fromTextArea(document.getElementById('code'), {
-  mode:'htmlmixed', lineNumbers:true, theme: localStorage.getItem('codoo_theme')||'eclipse',
+  mode:'htmlmixed', lineNumbers:true, theme:'material-darker',
   tabSize:2, autoCloseTags:true, autoCloseBrackets:true, matchBrackets:true,
   extraKeys:{'Ctrl-Space':'autocomplete','<':function(cm){cm.replaceSelection('<');cm.showHint({completeSingle:false});}}
 });
@@ -153,23 +112,12 @@ document.getElementById('runBtn').onclick = ()=>{
   doc.open();
   doc.write(editor.getValue());
   doc.close();
-  localStorage.setItem('codoo_code', editor.getValue());
 };
 
 document.getElementById('closePreview').onclick = ()=>{
   previewDiv.style.display='none';
   document.querySelector('main').style.gridTemplateColumns='1fr 0fr';
 };
-
-const modeBtn = document.getElementById('modeBtn');
-function applyMode(){
-  const dark = localStorage.getItem('codoo_dark')==='true';
-  document.body.classList.toggle('dark', dark);
-  editor.setOption('theme', dark?'material-darker':'eclipse');
-  modeBtn.textContent = dark?'Light Mode':'Dark Mode';
-}
-modeBtn.onclick = ()=>{ localStorage.setItem('codoo_dark', localStorage.getItem('codoo_dark')!=='true'); applyMode(); }
-applyMode();
 
 document.getElementById('undoBtn').onclick = ()=>editor.undo();
 document.getElementById('redoBtn').onclick = ()=>editor.redo();
@@ -193,27 +141,6 @@ menu.querySelectorAll('button').forEach(btn=>{
     menu.style.display='none';
   };
 });
-
-const streakBtn = document.getElementById('streakBtn');
-streakBtn.onclick = ()=>{
-  const today = new Date().toDateString();
-  if(localStorage.getItem('codoo_streak_day')===today){ alert('Already checked in today 👍'); return; }
-  const streak = Number(localStorage.getItem('codoo_streak')||0)+1;
-  localStorage.setItem('codoo_streak', streak);
-  localStorage.setItem('codoo_streak_day', today);
-  alert('Streak +' + streak);
-  updateBadge(streak);
-};
-
-function updateBadge(streak){
-  const badgeText = document.getElementById('badgeText');
-  const badgeImg = document.getElementById('badgeImg');
-  if(streak>=30){ badgeText.textContent='HTML Grandmaster'; badgeImg.src='badge4.png'; }
-  else if(streak>=14){ badgeText.textContent='HTML Adept'; badgeImg.src='badge3.png'; }
-  else if(streak>=7){ badgeText.textContent='HTML Apprentice'; badgeImg.src='badge2.png'; }
-  else{ badgeText.textContent='HTML Newbie'; badgeImg.src='badge1.png'; }
-}
-updateBadge(Number(localStorage.getItem('codoo_streak')||0));
 </script>
 
 </body>
