@@ -6,127 +6,113 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Codoo</title>
 <style>
+/* BODY & FONTS */
 body {
-  margin:0;
-  background:#0f0f0f;
-  color:#eaeaea;
-  font-family:system-ui,sans-serif;
-  height:100vh;
-  display:flex;
-  flex-direction:column;
-  overflow:hidden;
+  margin: 0;
+  font-family: Consolas, monospace;
+  background: #0f0f0f;
+  color: #eaeaea;
+  height: 100vh;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
 }
-/* Top Bar */
+
+/* INTRO ANIMATION */
+#intro {
+  position: fixed;
+  inset: 0;
+  background: #0f0f0f;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 999;
+  animation: introFade 3s forwards;
+}
+#intro h1 {
+  font-size: 48px;
+}
+.co { color: white; }
+.doo { color: #00e5ff; }
+@keyframes introFade {
+  0%,80% { opacity: 1; }
+  100% { opacity: 0; pointer-events: none; }
+}
+
+/* TOPBAR */
 .topbar {
-  display:flex;
-  align-items:center;
-  padding:10px 14px;
-  border-bottom:1px solid #222;
+  display: flex;
+  align-items: center;
+  padding: 8px 12px;
+  background: #111;
+  border-bottom: 1px solid #222;
+  opacity: 0;
+  animation: dropIn 0.5s forwards;
+  animation-delay: 3s;
 }
-.logo {
-  font-family:Consolas,monospace;
-  font-size:18px;
-  font-weight:bold;
-}
-.logo .co { color:white; }
-.logo .doo { color:#00e5ff; }
-.actions { margin-left:auto; display:flex; gap:8px; }
+.logo { font-weight: bold; font-size: 18px; }
+.actions { margin-left: auto; display: flex; gap: 6px; }
 .btn {
-  background:#1a1a1a;
-  color:#eaeaea;
-  border:1px solid #333;
-  padding:6px 12px;
-  cursor:pointer;
+  background: #1a1a1a;
+  color: #eaeaea;
+  border: 1px solid #333;
+  padding: 5px 10px;
+  cursor: pointer;
+  border-radius: 4px;
+  transition: 0.2s;
 }
-.btn:hover { background:#222; }
-/* Editor */
-#editor { flex:1; }
-/* Bottom Snippets Sheet */
-#snippets {
-  position:fixed;
-  bottom:-200px;
-  left:0;
-  width:100%;
-  background:#111;
-  border-top:2px solid #222;
-  padding:10px;
-  display:flex;
-  flex-wrap:wrap;
-  gap:6px;
-  transition:bottom 0.3s ease;
-  z-index:10;
+.btn:hover { background: #222; }
+
+/* EDITOR */
+#editor {
+  flex: 1;
+  background: #1e1e1e; /* CMD-like dark bg */
+  animation: dropIn 0.5s forwards;
+  animation-delay: 3.1s;
 }
-.snip-btn {
-  background:#1a1a1a;
-  color:#eaeaea;
-  border:none;
-  padding:6px 10px;
-  border-radius:4px;
-  cursor:pointer;
-}
-.snip-btn:hover { background:#222; }
-/* Run Panel */
+@keyframes dropIn { from {transform: translateY(-50px);opacity:0} to {transform: translateY(0);opacity:1} }
+
+/* RUN PANEL */
 #runPanel {
-  position:fixed;
-  inset:0;
-  background:white;
-  display:none;
-  flex-direction:column;
-  z-index:20;
+  position: fixed;
+  inset: 0;
+  background: #fff;
+  display: none;
+  flex-direction: column;
+  z-index: 20;
 }
 .run-header {
-  background:#111;
-  color:white;
-  padding:8px;
-  display:flex;
-  justify-content:space-between;
+  background: #111;
+  color: white;
+  padding: 8px;
+  display: flex;
+  justify-content: space-between;
 }
-iframe { flex:1; border:none; }
-/* Copy Button */
-#copyBtn { margin-left:8px; }
-/* Intro */
-#intro {
-  position:fixed;
-  inset:0;
-  background:#0f0f0f;
-  display:flex;
-  justify-content:center;
-  align-items:center;
-  z-index:999;
-  animation:introFade 3.2s forwards;
-}
-#intro h1 { font-size:48px; font-family:Consolas,monospace; }
-@keyframes introFade {
-  0%,80% { opacity:1; }
-  100% { opacity:0; pointer-events:none; }
-}
+iframe { flex: 1; border: none; }
 </style>
-<script src="https://unpkg.com/monaco-editor@0.45.0/min/vs/loader.js"></script>
+
+<!-- MONACO EDITOR LOADER -->
+<script src="https://cdn.jsdelivr.net/npm/monaco-editor@0.45.0/min/vs/loader.js"></script>
 </head>
 <body>
 
+<!-- INTRO -->
 <div id="intro">
   <h1><span class="co">Co</span><span class="doo">doo</span></h1>
 </div>
 
+<!-- APP -->
 <div class="topbar">
   <div class="logo"><span class="co">Co</span><span class="doo">doo</span></div>
   <div class="actions">
-    <button class="btn" id="copyBtn">Copy</button>
-    <button class="btn" id="runBtn">Run</button>
-    <button class="btn" id="snipToggle">Snippets</button>
+    <button class="btn" onclick="copyCode()">Copy</button>
+    <button class="btn" onclick="runCode()">Run</button>
   </div>
 </div>
 
 <div id="editor"></div>
 
-<div id="snippets">
-  <button class="snip-btn" data-snip="html">HTML Boilerplate</button>
-  <button class="snip-btn" data-snip="css">CSS Example</button>
-  <button class="snip-btn" data-snip="js">JS Example</button>
-  <button class="snip-btn" data-snip="form">Form Example</button>
-</div>
-
+<!-- RUN PANEL -->
 <div id="runPanel">
   <div class="run-header">
     <span>Output</span>
@@ -141,7 +127,7 @@ iframe { flex:1; border:none; }
 <script>
 let editor;
 
-require.config({ paths: { vs: 'https://unpkg.com/monaco-editor@0.45.0/min/vs' }});
+require.config({ paths: { vs: 'https://cdn.jsdelivr.net/npm/monaco-editor@0.45.0/min/vs' }});
 require(['vs/editor/editor.main'], function() {
   editor = monaco.editor.create(document.getElementById('editor'), {
     value: `<!DOCTYPE html>
@@ -150,55 +136,34 @@ require(['vs/editor/editor.main'], function() {
 <h1>Codoo</h1>
 <input placeholder="Type here">
 <script>
-document.querySelector("input").oninput =
-  e => console.log(e.target.value);
+document.querySelector("input").oninput = e => console.log(e.target.value);
 </script>
 </body>
 </html>`,
-    language:'html',
-    theme:'vs-dark',
-    automaticLayout:true,
-    fontSize:14,
-    minimap:{enabled:false},
-    wordWrap:'on',
-    autoClosingBrackets: "always",
-    autoClosingQuotes: "always",
-    suggestOnTriggerCharacters: true
+    language: 'html',
+    theme: 'vs-dark',
+    automaticLayout: true,
+    fontSize: 14,
+    minimap: { enabled: false },
+    wordWrap: 'on',
+    autoClosingBrackets: 'always',
+    autoClosingQuotes: 'always',
   });
 });
 
-// Run
+// RUN FUNCTION
 function runCode() {
-  document.getElementById('runPanel').style.display='flex';
+  const panel = document.getElementById('runPanel');
+  panel.style.display = 'flex';
   document.getElementById('output').srcdoc = editor.getValue();
 }
-function closeRun() { document.getElementById('runPanel').style.display='none'; }
-
-// Copy
-document.getElementById('copyBtn').onclick = ()=>navigator.clipboard.writeText(editor.getValue());
-
-// Snippets toggle
-const snipSheet = document.getElementById('snippets');
-document.getElementById('snipToggle').onclick = ()=>{
-  snipSheet.style.bottom = snipSheet.style.bottom==='0px'?'-200px':'0px';
-};
-snipSheet.querySelectorAll('.snip-btn').forEach(btn=>{
-  btn.onclick = ()=>{
-    const val = btn.dataset.snip;
-    if(val==='html') editor.setValue(`<!DOCTYPE html>
-<html>
-<head><title>HTML</title></head>
-<body><h1>Hello World</h1></body>
-</html>`);
-    else if(val==='css') editor.setValue(`body{font-family:sans-serif;background:#111;color:white;}
-h1{color:#00e5ff;}`);
-    else if(val==='js') editor.setValue(`console.log('Hello Codoo'); alert('Hello');`);
-    else if(val==='form') editor.setValue(`<form><input placeholder="Name"><button>Submit</button></form>`);
-  };
-});
-
-// Remove intro after 3.2s
-setTimeout(()=>document.getElementById('intro').remove(), 3200);
+function closeRun() {
+  document.getElementById('runPanel').style.display = 'none';
+}
+function copyCode() {
+  navigator.clipboard.writeText(editor.getValue());
+  alert('Code copied!');
+}
 </script>
 </body>
 </html>
